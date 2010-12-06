@@ -12,7 +12,11 @@ The application also includes functionality to save the audio stream.
 
 == Screenshots ==
 
-tbd.
+[http://vlcj-apps.googlecode.com/svn/trunk/vlcj-radio/etc/vlcj-radio-1.png An exciting progress dialog]
+
+[http://vlcj-apps.googlecode.com/svn/trunk/vlcj-radio/etc/vlcj-radio-2.png Genre live filtering]
+
+[http://vlcj-apps.googlecode.com/svn/trunk/vlcj-radio/etc/vlcj-radio-3.png Station name live filtering]
 
 == Prerequisites ==
 
