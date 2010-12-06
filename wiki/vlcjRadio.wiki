@@ -82,7 +82,7 @@ After launching the application the main window will appear.
 
 First the radio station directory is fetched, in a background thread, from xiph.org and cached to a local file. 
 
-On subsequent launches of the application the directory file is only downloaded if the server reports the last modified date is different to that of the locally cached file. This saves the overhead of downloading an approximately 2Mb directory file each time you start the application.
+On subsequent launches of the application the directory file is only downloaded if the server reports the last modified date is different to that of the locally cached file. This saves the overhead of downloading an approximately 2Mb directory file each time you start the application. This behaviour would be more useful if the directory did not include a "current song" element, in practice the directory file might be changing regularly.
 
 If this file showhow gets corrupted you can simply delete it and it will be fetched the next time you start the application.
 
