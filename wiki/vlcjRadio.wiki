@@ -50,7 +50,7 @@ $mkdir vlcj-apps
 $cd vlcj-apps
 }}}
 
-Download the application package from the downloads page, or:
+Download the application package from the [http://code.google.com/p/vlcj-apps/downloads/list downloads] page, or:
 
 {{{
 $wget http://vlcj-apps.googlecode.com/files/vlcj-radio-1.0.0-dist.tgz
