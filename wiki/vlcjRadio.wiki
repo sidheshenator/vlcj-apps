@@ -50,16 +50,22 @@ $mkdir vlcj-apps
 $cd vlcj-apps
 }}}
 
-Download the application package from tbd, or:
+Download the application package from the downloads page, or:
 
 {{{
-$wget http://tbd
+$wget http://vlcj-apps.googlecode.com/files/vlcj-radio-1.0.0-dist.tgz
 }}}
 
 Unpack the archive to a directory on your local disk.
 
 {{{
-$tbd
+$tar -xzf vlcj-radio-1.0.0-dist.tgz
+}}}
+
+This will create a directory named "vlcj-radio-1.0.0":
+
+{{{
+$cd vlcj-radio-1.0.0
 }}}
 
 == Starting the Application ==
