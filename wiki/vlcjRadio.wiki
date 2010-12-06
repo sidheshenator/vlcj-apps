@@ -102,6 +102,6 @@ If the streaming does not start within a second or so it is likely the radio sta
 
 To enable stream recording you use the "Radio" menu and the "Enable Stream Recording" menu item. You will be shown an informatinal dialog box that tells you that the recording will begin/end the next time you play a stream.
 
-Some internet radio stations forbid the recording of audio streams - it is your responsibility to comply with any such terms and conditions.
+Some internet radio stations forbid the recording of audio streams - it is your responsibility to comply with any such terms and conditions. The basic operation of the record functionality provided by this application is no different than that provided by vlc itself.
 
 This software does not contain an MP3 encoder - it may, through libvlc, makes use of an MP3 encoder if one is available as part of your operating system.
