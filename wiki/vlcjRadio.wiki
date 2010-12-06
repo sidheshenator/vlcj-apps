@@ -84,7 +84,7 @@ First the radio station directory is fetched, in a background thread, from xiph.
 
 On subsequent launches of the application the directory file is only downloaded if the server reports the last modified date is different to that of the locally cached file. This saves the overhead of downloading an approximately 2Mb directory file each time you start the application. This behaviour would be more useful if the directory did not include a "current song" element, in practice the directory file might be changing regularly.
 
-If this file showhow gets corrupted you can simply delete it and it will be fetched the next time you start the application.
+If this file somehow gets corrupted you can simply delete it and it will be fetched the next time you start the application.
 
 When the directory file has finished loading, you will then see a scrolling table of radio stations and a set of search controls.
 
@@ -100,8 +100,10 @@ If the streaming does not start within a second or so it is likely the radio sta
 
 === Recording Streams ===
 
-To enable stream recording you use the "Radio" menu and the "Enable Stream Recording" menu item. You will be shown an informatinal dialog box that tells you that the recording will begin/end the next time you play a stream.
+To enable stream recording you use the "Radio" menu and the "Enable Stream Recording" menu item. You will be shown an informational dialog box that tells you that the recording will begin/end the next time you play a stream.
+
+Recorded files will appear in a vlcj-radio inside your user home directory.
 
 Some internet radio stations forbid the recording of audio streams - it is your responsibility to comply with any such terms and conditions. The basic operation of the record functionality provided by this application is no different than that provided by vlc itself.
 
-This software does not contain an MP3 encoder - it may, through libvlc, makes use of an MP3 encoder if one is available as part of your operating system.
+This software does not contain an MP3 encoder - it may, through libvlc, makes use of an MP3 encoder if one is available as part of your operating system. Again, the basic operation of encoding to MP3 is no different than that provided by vlc itself.
