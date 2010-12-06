@@ -116,4 +116,4 @@ Some internet radio stations forbid the recording of audio streams - it is your 
 
 This software does not contain an MP3 encoder - it may, through libvlc, makes use of an MP3 encoder if one is available as part of your operating system. Again, the basic operation of encoding to MP3 is no different than that provided by vlc itself.
 
-It is entirely your responsibility what you may record and encode.
+It is entirely your responsibility what you record and encode.
