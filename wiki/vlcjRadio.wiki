@@ -71,7 +71,7 @@ $java -jar vlcj-radio-1.0.0.jar
 You can enable vlcj logging if you like:
 
 {{{
-$java -jar vlcj-radio-1.0.0.jar -Dvlcj.log=DEBUG
+$java -Dvlcj.log=DEBUG -jar vlcj-radio-1.0.0.jar
 }}}
 
 == Usage ==
