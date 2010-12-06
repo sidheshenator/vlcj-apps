@@ -1,0 +1,107 @@
+= vlcj radio =
+
+== Introduction ==
+
+This is a Swing rich-client application that uses vlcj and libvlc to play internet radio audio streams.
+
+The Icecast server radio station directory from xiph.org is retrieved and displayed in the application. 
+
+The user can then search through the list of available radio stations and filter by various properties (such as name or genre).
+
+The application also includes functionality to save the audio stream.
+
+== Screenshots ==
+
+tbd.
+
+== Prerequisites ==
+
+The prerequisites are:
+
+  * a Java 6 (1.6) run-time environment;
+  * vlc 1.1.4 (or later, the later the version the better).
+
+In addition, to save audio streams:
+
+  * a version of ffmpeg that contains an MP3 encoder.
+
+You do not get MP3 encoding by default on Ubuntu, the following may help:
+
+{{{
+$sudo apt-get install libavcodec-extra-52
+}}}
+
+== Dependencies ==
+
+This application has the following dependencies (all required Java library dependencies are included in the download package):
+
+  * vlcj 1.1.4;
+  * JNA 3.2.7 (jna.jar and platform.jar);
+  * MiGLayout 3.7.3.1;
+  * !GlazedLists 1.8.0;
+  * Simple XML Framework 2.4.
+
+== Download ==
+
+Prepare a local directory:
+
+{{{
+$mkdir vlcj-apps
+$cd vlcj-apps
+}}}
+
+Download the application package from tbd, or:
+
+{{{
+$wget http://tbd
+}}}
+
+Unpack the archive to a directory on your local disk.
+
+{{{
+$tbd
+}}}
+
+== Starting the Application ==
+
+{{{
+$java -jar vlcj-radio-1.0.0.jar
+}}}
+
+You can enable vlcj logging if you like:
+
+{{{
+$java -jar vlcj-radio-1.0.0.jar -Dvlcj.log=DEBUG
+}}}
+
+== Usage ==
+
+This application stores files in a directory called "vlcj-radio" in your user home directory.
+
+After launching the application the main window will appear.
+
+First the radio station directory is fetched, in a background thread, from xiph.org and cached to a local file. 
+
+On subsequent launches of the application the directory file is only downloaded if the server reports the last modified date is different to that of the locally cached file. This saves the overhead of downloading an approximately 2Mb directory file each time you start the application.
+
+If this file showhow gets corrupted you can simply delete it and it will be fetched the next time you start the application.
+
+When the directory file has finished loading, you will then see a scrolling table of radio stations and a set of search controls.
+
+You can sort, in ascending or descending order, by clicking on the table column headers. The sort can work across multiple columns. To reset the sort back to a single column you double-click the column header.
+
+The search controls implement a live filter on the list of radio stations so you can narrow down the list to those stations you are interested in. For example, typing "trance" into the genre filter control will remove any items from the list that do not contain "trance" in their genre.
+
+When you have found a radio station you want to listen to, double-click the corresponding table row or select the row and click the "Play" button.
+
+The streaming should start after a very brief pause. 
+
+If the streaming does not start within a second or so it is likely the radio station you selected is currently off-line. There is no guarantee that every station in the directory is on-line.
+
+=== Recording Streams ===
+
+To enable stream recording you use the "Radio" menu and the "Enable Stream Recording" menu item. You will be shown an informatinal dialog box that tells you that the recording will begin/end the next time you play a stream.
+
+Some internet radio stations forbid the recording of audio streams - it is your responsibility to comply with any such terms and conditions.
+
+This software does not contain an MP3 encoder - it may, through libvlc, makes use of an MP3 encoder if one is available as part of your operating system.
