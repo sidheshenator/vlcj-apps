@@ -8,7 +8,7 @@ The Icecast server radio station directory from xiph.org is retrieved and displa
 
 The user can then search through the list of available radio stations and filter by various properties (such as name or genre).
 
-The application also includes functionality to save the audio stream.
+The application also includes functionality to save the audio stream, if this is supported by your operating system.
 
 == Screenshots ==
 
