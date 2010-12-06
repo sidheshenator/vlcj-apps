@@ -104,6 +104,8 @@ The streaming should start after a very brief pause.
 
 If the streaming does not start within a second or so it is likely the radio station you selected is currently off-line. There is no guarantee that every station in the directory is on-line.
 
+There are no volume controls in the application itself, you're expected to use your desktop volume applet/controls.
+
 === Recording Streams ===
 
 To enable stream recording you use the "Radio" menu and the "Enable Stream Recording" menu item. You will be shown an informational dialog box that tells you that the recording will begin/end the next time you play a stream.
