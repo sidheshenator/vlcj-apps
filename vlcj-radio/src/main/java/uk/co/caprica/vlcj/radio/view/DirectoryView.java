@@ -231,23 +231,36 @@ public class DirectoryView extends JPanel {
             dlg.setVisible(true);
           }
         });
+
+        // Load each directory individually, swallowing exceptions so we can
+        // continue with subsequent directories even on error...
+        
+        DirectoryService directoryService;
+        Directory directory;
         
         try {
-          DirectoryService directoryService;
-          Directory directory;
-          
           directoryService = new IcecastDirectoryService();
           directory = directoryService.directory();
           directoryEventList.getReadWriteLock().writeLock().lock();
           directoryEventList.addAll(directory.entries());
           directoryEventList.getReadWriteLock().writeLock().unlock();
-          
+        }
+        catch(Throwable t) {
+          System.err.println("Warning: failed to read Icecast directory");
+        }
+
+        try {
           directoryService = new BbcStreamsDirectoryService();
           directory = directoryService.directory();
           directoryEventList.getReadWriteLock().writeLock().lock();
           directoryEventList.addAll(directory.entries());
           directoryEventList.getReadWriteLock().writeLock().unlock();
+        }
+        catch(Throwable t) {
+          System.err.println("Warning: failed to read BBCStreams directory");
+        }
 
+        try {
           directoryService = new IndymediaDirectoryService();
           directory = directoryService.directory();
           directoryEventList.getReadWriteLock().writeLock().lock();
@@ -255,7 +268,7 @@ public class DirectoryView extends JPanel {
           directoryEventList.getReadWriteLock().writeLock().unlock();
         }
         catch(Throwable t) {
-          // Like this to make sure that the dialog is closed
+          System.err.println("Warning: failed to read Indymedia directory");
         }
         
         dlg.setVisible(false);
@@ -373,8 +386,14 @@ public class DirectoryView extends JPanel {
     }
   }
   
+  /**
+   *
+   */
   private static class DirectoryTableFormat implements TableFormat<DirectoryEntry> {
 
+    /**
+     * Table column header labels.
+     */
     private static final String[] COLUMN_LABELS = {"Directory", "Name", "Genre", "Address", "Type"};
 
     @Override
