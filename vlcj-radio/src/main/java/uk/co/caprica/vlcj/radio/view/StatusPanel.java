@@ -91,9 +91,9 @@ public class StatusPanel extends JPanel {
 
   public void setModel(String customEntry) {
     if(customEntry != null) {
-      nameValueLabel.setText("<html><b>" + customEntry + "</b></html>");
+      nameValueLabel.setText("<n/a>");
       genreValueLabel.setText("<n/a>");
-      addressValueLabel.setText("<n/a>");
+      addressValueLabel.setText("<html><b>" + customEntry + "</b></html>");
       typeValueLabel.setText("<n/a>");
     }
     else {
