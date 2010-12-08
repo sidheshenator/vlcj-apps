@@ -77,6 +77,11 @@ public class IcecastDirectoryEntry implements DirectoryEntry {
   private String nowPlaying;
   
   @Override
+  public String getDirectory() {
+    return "Icecast";
+  }
+
+  @Override
   public String getName() {
     return name;
   }

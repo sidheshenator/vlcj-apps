@@ -25,6 +25,13 @@ package uk.co.caprica.vlcj.radio.model;
 public interface DirectoryEntry extends Comparable<DirectoryEntry>{
 
   /**
+   * Get the directory.
+   * 
+   * @return directory
+   */
+  String getDirectory();
+  
+  /**
    * Get the name.
    * 
    * @return name
