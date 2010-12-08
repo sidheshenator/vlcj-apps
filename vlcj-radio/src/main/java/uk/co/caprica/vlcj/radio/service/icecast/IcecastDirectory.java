@@ -32,7 +32,7 @@ import uk.co.caprica.vlcj.radio.model.DirectoryEntry;
 /**
  * Implementation of a directory.
  */
-@Root
+@Root(name = "directory")
 public class IcecastDirectory implements Directory {
 
   /**
