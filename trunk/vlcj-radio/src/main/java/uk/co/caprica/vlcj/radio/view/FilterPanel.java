@@ -43,11 +43,15 @@ public class FilterPanel extends JPanel {
   private final DirectoryMatcherEditor directoryMatcherEditor;
   
   private enum Filter {
+    DIRECTORY,
     NAME,
     ADDRESS,
     TYPE,
     GENRE
   }
+  
+  private JLabel directoryLabel;
+  private JTextField directoryTextField;
   
   private JLabel nameLabel;
   private JTextField nameTextField;
@@ -67,8 +71,14 @@ public class FilterPanel extends JPanel {
     this.directoryMatcherEditor = directoryMatcherEditor;
     
     setBorder(new TitledBorder(""));
-    setLayout(new MigLayout("", "[]rel[]16[]rel[]16[]rel[]16[]rel[]16[]", ""));
+    setLayout(new MigLayout("", "[]rel[]16[]rel[]16[]rel[]16[]rel[]16[]rel[]16[]", ""));
 
+    directoryLabel = new JLabel("Directory:");
+    directoryLabel.setDisplayedMnemonic('d');
+    directoryTextField = new JTextField();
+    directoryTextField.setColumns(10);
+    directoryTextField.setFocusAccelerator('d');
+    
     nameLabel = new JLabel("Name:");
     nameLabel.setDisplayedMnemonic('n');
     nameTextField = new JTextField();
@@ -78,14 +88,14 @@ public class FilterPanel extends JPanel {
     genreLabel = new JLabel("Genre:");
     genreLabel.setDisplayedMnemonic('g');
     genreTextField = new JTextField();
-    genreTextField.setColumns(20);
+    genreTextField.setColumns(10);
     genreTextField.setFocusAccelerator('g');
     
     addressLabel = new JLabel("Address:");
-    addressLabel.setDisplayedMnemonic('a');
+    addressLabel.setDisplayedMnemonic('d');
     addressTextField = new JTextField();
     addressTextField.setColumns(20);
-    addressTextField.setFocusAccelerator('a');
+    addressTextField.setFocusAccelerator('d');
     
     typeLabel = new JLabel("Type:");
     typeLabel.setDisplayedMnemonic('t');
@@ -95,6 +105,9 @@ public class FilterPanel extends JPanel {
     
     clearButton = new JButton("Clear");
     clearButton.setMnemonic('c');
+
+    add(directoryLabel);
+    add(directoryTextField);
 
     add(nameLabel);
     add(nameTextField);
@@ -110,6 +123,7 @@ public class FilterPanel extends JPanel {
 
     add(clearButton);
     
+    directoryTextField.getDocument().addDocumentListener(new FilterDocumentListener(Filter.DIRECTORY));
     nameTextField.getDocument().addDocumentListener(new FilterDocumentListener(Filter.NAME));
     addressTextField.getDocument().addDocumentListener(new FilterDocumentListener(Filter.ADDRESS));
     typeTextField.getDocument().addDocumentListener(new FilterDocumentListener(Filter.TYPE));
@@ -118,6 +132,7 @@ public class FilterPanel extends JPanel {
     clearButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
+        directoryTextField.setText(null);
         nameTextField.setText(null);
         addressTextField.setText(null);
         typeTextField.setText(null);
@@ -152,6 +167,10 @@ public class FilterPanel extends JPanel {
     
     private void updateFilter(DocumentEvent e) {
       switch(filter) {
+        case DIRECTORY:
+          directoryMatcherEditor.setDirectory(directoryTextField.getText().toLowerCase());
+          break;
+          
         case NAME:
           directoryMatcherEditor.setName(nameTextField.getText().toLowerCase());
           break;

@@ -88,4 +88,19 @@ public class StatusPanel extends JPanel {
       typeValueLabel.setText("<n/a>");
     }
   }
+
+  public void setModel(String customEntry) {
+    if(customEntry != null) {
+      nameValueLabel.setText("<n/a>");
+      addressValueLabel.setText("<html><b>" + customEntry + "</b></html>");
+      addressValueLabel.setText("<n/a>");
+      typeValueLabel.setText("<n/a>");
+    }
+    else {
+      nameValueLabel.setText("<n/a>");
+      addressValueLabel.setText("<n/a>");
+      addressValueLabel.setText("<n/a>");
+      typeValueLabel.setText("<n/a>");
+    }
+  }
 }

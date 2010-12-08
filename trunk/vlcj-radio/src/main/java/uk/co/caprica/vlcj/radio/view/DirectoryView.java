@@ -35,9 +35,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
@@ -46,11 +49,14 @@ import net.miginfocom.swing.MigLayout;
 import uk.co.caprica.vlcj.radio.model.Directory;
 import uk.co.caprica.vlcj.radio.model.DirectoryEntry;
 import uk.co.caprica.vlcj.radio.service.DirectoryService;
+import uk.co.caprica.vlcj.radio.service.bbcstreams.BbcStreamsDirectoryService;
 import uk.co.caprica.vlcj.radio.service.icecast.IcecastDirectoryService;
+import uk.co.caprica.vlcj.radio.service.indymedia.IndymediaDirectoryService;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
 import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.matchers.MatcherEditor;
@@ -70,11 +76,13 @@ public class DirectoryView extends JPanel {
   private static final long serialVersionUID = 1L;
 
   public static final String ACTIVATE_COMMAND = "activate";
+  public static final String ACTIVATE_CUSTOM_COMMAND = "activate-custom";
+  public static final String STOP_COMMAND = "stop";
   
   private final EventList<DirectoryEntry> directoryEventList = new BasicEventList<DirectoryEntry>();
   private final SortedList<DirectoryEntry> directorySortedList = new SortedList<DirectoryEntry>(directoryEventList);
   private final DirectoryMatcherEditor directoryMatcherEditor = new DirectoryMatcherEditor();
-  private final FilterList<DirectoryEntry> directoryFilterList = new FilterList<DirectoryEntry>(directorySortedList, (MatcherEditor<? super DirectoryEntry>)directoryMatcherEditor);
+  private final FilterList<DirectoryEntry> directoryFilterList = new FilterList<DirectoryEntry>(directorySortedList, (MatcherEditor<DirectoryEntry>)directoryMatcherEditor);
   
   private final JPanel topPanel;
   
@@ -83,6 +91,10 @@ public class DirectoryView extends JPanel {
   private final StatusPanel statusPanel;
   
   private final JButton playButton;
+  private final JButton stopButton;
+  private final JTabbedPane tabbedPane;
+  private final JLabel customStationLabel;
+  private final JTextField customStationTextField;
   private final JScrollPane directoryTableScrollPane;
   private final JTable directoryTable;
   
@@ -104,7 +116,21 @@ public class DirectoryView extends JPanel {
     playButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        fireActivateEvent();
+        if(tabbedPane.getSelectedIndex() == 0) {
+          fireEvent(ACTIVATE_COMMAND);
+        }
+        else {
+          fireEvent(ACTIVATE_CUSTOM_COMMAND);
+        }
+      }
+    });
+    
+    stopButton = new JButton("Stop");
+    stopButton.setMnemonic('s');
+    stopButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        fireEvent(STOP_COMMAND);
       }
     });
     
@@ -112,10 +138,17 @@ public class DirectoryView extends JPanel {
     playPanel.setBorder(new TitledBorder(""));
     playPanel.setLayout(new FlowLayout());
     playPanel.add(playButton);
+    playPanel.add(stopButton);
     topPanel.add(playPanel, BorderLayout.EAST);
     
     statusPanel = new StatusPanel();
     add(statusPanel, BorderLayout.SOUTH);
+    
+    JPanel mainContent = new JPanel();
+    mainContent.setLayout(new BorderLayout());
+    mainContent.setBorder(new CompoundBorder(new EmptyBorder(2, 2, 2, 2), new TitledBorder("")));
+    
+    tabbedPane = new JTabbedPane();
     
     directoryTable = new JTable();
     directoryTable.setModel(new DirectoryTableModel(directoryFilterList));
@@ -126,7 +159,33 @@ public class DirectoryView extends JPanel {
     directoryTableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     directoryTableScrollPane.setViewportView(directoryTable);
     
-    add(directoryTableScrollPane, BorderLayout.CENTER);
+    tabbedPane.addTab("Directory", directoryTableScrollPane);
+    
+    JPanel customPane = new JPanel();
+    customPane.setLayout(new MigLayout("insets 16", "[r]rel[l]", ""));
+
+    customStationLabel = new JLabel("Custom Station:");
+    customStationLabel.setDisplayedMnemonic('c');
+    customStationTextField = new JTextField(60);
+    customStationTextField.setFocusAccelerator('c');
+    customStationTextField.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        String address = customStationTextField.getText().trim();
+        if(address.length() > 0) {
+          fireEvent(ACTIVATE_CUSTOM_COMMAND);
+        }
+      }
+    });
+    
+    customPane.add(customStationLabel);
+    customPane.add(customStationTextField);
+    
+    tabbedPane.addTab("Custom Station", customPane);
+    
+    mainContent.add(tabbedPane, BorderLayout.CENTER);
+    
+    add(mainContent, BorderLayout.CENTER);
 
     TableComparatorChooser.install(directoryTable, directorySortedList, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
     
@@ -155,7 +214,7 @@ public class DirectoryView extends JPanel {
         final JDialog dlg = new JDialog(parentFrame, "Please wait...", true);
         JPanel cp = new JPanel();
         cp.setLayout(new MigLayout("fill, insets 16", "[c]", ""));
-        cp.add(new JLabel("Please wait, loading station directory..."), "wrap");
+        cp.add(new JLabel("Please wait, loading station directories..."), "wrap");
         JProgressBar progressBar = new JProgressBar();
         progressBar.setIndeterminate(true);
         cp.add(progressBar, "growx");
@@ -174,9 +233,26 @@ public class DirectoryView extends JPanel {
         });
         
         try {
-          DirectoryService directoryService = new IcecastDirectoryService();
-          Directory directory = directoryService.directory();
+          DirectoryService directoryService;
+          Directory directory;
+          
+          directoryService = new IcecastDirectoryService();
+          directory = directoryService.directory();
+          directoryEventList.getReadWriteLock().writeLock().lock();
           directoryEventList.addAll(directory.entries());
+          directoryEventList.getReadWriteLock().writeLock().unlock();
+          
+          directoryService = new BbcStreamsDirectoryService();
+          directory = directoryService.directory();
+          directoryEventList.getReadWriteLock().writeLock().lock();
+          directoryEventList.addAll(directory.entries());
+          directoryEventList.getReadWriteLock().writeLock().unlock();
+
+          directoryService = new IndymediaDirectoryService();
+          directory = directoryService.directory();
+          directoryEventList.getReadWriteLock().writeLock().lock();
+          directoryEventList.addAll(directory.entries());
+          directoryEventList.getReadWriteLock().writeLock().unlock();
         }
         catch(Throwable t) {
           // Like this to make sure that the dialog is closed
@@ -198,14 +274,22 @@ public class DirectoryView extends JPanel {
     }
   }
   
+  public String getCustomEntry() {
+    return customStationTextField.getText().trim();
+  }
+  
   public void setNowPlaying(DirectoryEntry selectedEntry) {
     statusPanel.setModel(getSelectedEntry());
   }
 
-  private void fireActivateEvent() {
+  public void setNowPlaying(String customEntry) {
+    statusPanel.setModel(customEntry);
+  }
+
+  private void fireEvent(String command) {
     ActionListener[] listeners = listenerList.getListeners(ActionListener.class);
     if(listeners.length > 0) {
-      ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ACTIVATE_COMMAND);
+      ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, command);
       for(int i = listeners.length - 1; i >= 0; i--) {
         listeners[i].actionPerformed(event);
       }
@@ -216,13 +300,14 @@ public class DirectoryView extends JPanel {
     @Override
     public void mouseClicked(MouseEvent e) {
       if(e.getClickCount() == 2) {
-        fireActivateEvent();
+        fireEvent(ACTIVATE_COMMAND);
       }
     }
   }
 
   class DirectoryMatcherEditor extends AbstractMatcherEditor<DirectoryEntry> implements Matcher<DirectoryEntry> {
     
+    private String directory;
     private String name;
     private String address;
     private String type;
@@ -235,13 +320,19 @@ public class DirectoryView extends JPanel {
     
     @Override
     public boolean matches(DirectoryEntry entry) {
-      return match(name   , entry.getName ()) &&
-             match(address, entry.getUrl  ()) &&
-             match(type   , entry.getType ()) &&
-             match(genre  , entry.getGenre()
+      return match(directory, entry.getDirectory()) &&
+             match(name     , entry.getName     ()) &&
+             match(address  , entry.getUrl      ()) &&
+             match(type     , entry.getType     ()) &&
+             match(genre    , entry.getGenre    ()
       );
     }
 
+    void setDirectory(String directory) {
+      this.directory = directory;
+      fireChanged(this);
+    }
+    
     void setName(String name) {
       this.name = name;
       fireChanged(this);
@@ -263,7 +354,7 @@ public class DirectoryView extends JPanel {
     }
     
     void clear() {
-      name = address = type = genre = null;
+      directory = name = address = type = genre = null;
       fireMatchAll();
     }
     
@@ -277,12 +368,44 @@ public class DirectoryView extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = {"name", "genre", "url", "type"};
-    private static final String[] COLUMN_LABELS = {"Name", "Genre", "Address", "Type"};
-    private static final boolean[] WRITABLE = {false, false, false, false};
-    
     public DirectoryTableModel(EventList<DirectoryEntry> source) {
-      super(source, PROPERTY_NAMES, COLUMN_LABELS, WRITABLE);
+      super(source, new DirectoryTableFormat());
+    }
+  }
+  
+  private static class DirectoryTableFormat implements TableFormat<DirectoryEntry> {
+
+    private static final String[] COLUMN_LABELS = {"Directory", "Name", "Genre", "Address", "Type"};
+
+    @Override
+    public int getColumnCount() {
+      return COLUMN_LABELS.length;
+    }
+
+    @Override
+    public String getColumnName(int col) {
+      return COLUMN_LABELS[col];
+    }
+
+    @Override
+    public Object getColumnValue(DirectoryEntry value, int col) {
+      switch(col) {
+        case 0:
+          return value.getDirectory();
+          
+        case 1:
+          return value.getName();
+          
+        case 2:
+          return value.getGenre();
+        
+        case 3:
+          return value.getUrl();
+          
+        case 4:
+          return value.getType();
+      }
+      return null;
     }
   }
 }
