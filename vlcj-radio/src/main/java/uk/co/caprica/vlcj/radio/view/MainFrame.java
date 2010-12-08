@@ -141,12 +141,22 @@ public class MainFrame extends JFrame {
         DirectoryEntry selectedEntry = directoryView.getSelectedEntry();
         if(selectedEntry != null) {
           directoryView.setNowPlaying(selectedEntry);
-          String[] mediaOptions = record ? getRecordMediaOptions(selectedEntry) : new String[0];
+          String[] mediaOptions = record ? getRecordMediaOptions(selectedEntry.getUrl()) : new String[0];
           mediaPlayer.playMedia(selectedEntry.getUrl(), mediaOptions);
         }
         else {
-          directoryView.setNowPlaying(null);
+          directoryView.setNowPlaying((DirectoryEntry)null);
         }
+      }
+      else if(DirectoryView.ACTIVATE_CUSTOM_COMMAND.equals(command)) {
+        String customEntry = directoryView.getCustomEntry();
+        directoryView.setNowPlaying(customEntry);
+        String[] mediaOptions = record ? getRecordMediaOptions(customEntry) : new String[0];
+        mediaPlayer.playMedia(customEntry, mediaOptions);
+      }
+      else if(DirectoryView.STOP_COMMAND.equals(command)) {
+        mediaPlayer.stop();
+        directoryView.setNowPlaying((String)null);
       }
     }
   }
@@ -158,8 +168,8 @@ public class MainFrame extends JFrame {
     }
   }
   
-  private String[] getRecordMediaOptions(DirectoryEntry selectedEntry) {
-    File file = getFile(selectedEntry);
+  private String[] getRecordMediaOptions(String address) {
+    File file = getFile(address);
     StringBuilder sb = new StringBuilder(200);
     sb.append("sout=#transcode{acodec=mp3,channels=2,ab=192,samplerate=44100}:duplicate{dst=display,dst=std{access=file,mux=raw,dst=");
     sb.append(file.getPath());
@@ -167,10 +177,10 @@ public class MainFrame extends JFrame {
     return new String[] {sb.toString()};
   }
   
-  private File getFile(DirectoryEntry entry) {
+  private File getFile(String address) {
     StringBuilder sb = new StringBuilder(100);
     try {
-      URL url = new URL(entry.getUrl());
+      URL url = new URL(address);
       sb.append(new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()));
       sb.append('-');
       sb.append(url.getHost().replace('.', '_'));
@@ -186,7 +196,7 @@ public class MainFrame extends JFrame {
       return new File(saveDirectory, sb.toString());
     }
     catch(MalformedURLException e) {
-      throw new RuntimeException("Unable to a URL for '" + entry.getUrl() + "'");
+      throw new RuntimeException("Unable to a URL for '" + address + "'");
     }
   }
 }
