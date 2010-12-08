@@ -30,8 +30,7 @@ import uk.co.caprica.vlcj.radio.model.Directory;
 import uk.co.caprica.vlcj.radio.model.DirectoryEntry;
 
 /**
- * Implementation of a directory that uses the Icecast "yellow-pages" at 
- * xiph.org.
+ * Implementation of a directory.
  */
 @Root
 public class IcecastDirectory implements Directory {
