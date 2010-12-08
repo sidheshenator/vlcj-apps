@@ -372,7 +372,7 @@ public class DirectoryView extends JPanel {
     }
     
     private boolean match(String s, String value) {
-      return s == null || s.trim().length() == 0 || value.toLowerCase().contains(s);
+      return s == null || s.trim().length() == 0 || (value != null && value.toLowerCase().contains(s));
     }
   }
 
