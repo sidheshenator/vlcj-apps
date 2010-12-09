@@ -44,7 +44,7 @@ This application has the following dependencies (all required Java library depen
   * MiGLayout 3.7.3.1;
   * !GlazedLists 1.8.0;
   * Simple XML Framework 2.4;
-  * HtmlUnit 2.8 (and all associated dependencies).
+  * !HtmlUnit 2.8 (and all associated dependencies).
 
 == Download ==
 
