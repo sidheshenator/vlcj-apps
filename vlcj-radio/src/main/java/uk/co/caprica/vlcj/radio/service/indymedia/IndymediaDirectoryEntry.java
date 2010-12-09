@@ -138,8 +138,8 @@ public class IndymediaDirectoryEntry implements DirectoryEntry {
     sb.append("name=").append(name).append(',');
     sb.append("url=").append(url).append(',');
     sb.append("type=").append(type).append(',');
-    sb.append("bitRate=").append(url).append(',');
-    sb.append("genre=").append(url).append(']');
+    sb.append("bitRate=").append(bitRate).append(',');
+    sb.append("genre=").append(genre).append(']');
     return sb.toString();
   }
 }
