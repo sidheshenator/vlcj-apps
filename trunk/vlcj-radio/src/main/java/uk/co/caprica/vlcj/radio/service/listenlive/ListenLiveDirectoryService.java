@@ -22,8 +22,6 @@ package uk.co.caprica.vlcj.radio.service.listenlive;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.simpleframework.xml.Root;
-
 import uk.co.caprica.vlcj.radio.model.Directory;
 import uk.co.caprica.vlcj.radio.service.DirectoryService;
 
