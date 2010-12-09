@@ -4,9 +4,9 @@
 
 This is a Swing rich-client application that uses vlcj and libvlc to play internet radio audio streams.
 
-The Icecast server radio station directory from xiph.org is retrieved and displayed in the application. 
+A number of different internet radio directories (e.g. Icecast, Indymedia, !ListenLive and BBCStreams) are scanned for available stations and displayed in the application.
 
-The user can then search through the list of available radio stations and filter by various properties (such as name or genre).
+You can then search through the list of available radio stations and filter by various properties (such as name or genre).
 
 The application also includes functionality to save the audio stream, if this is supported by your operating system.
 
@@ -43,7 +43,8 @@ This application has the following dependencies (all required Java library depen
   * JNA 3.2.7 (jna.jar and platform.jar);
   * MiGLayout 3.7.3.1;
   * !GlazedLists 1.8.0;
-  * Simple XML Framework 2.4.
+  * Simple XML Framework 2.4;
+  * HtmlUnit 2.8 (and all associated dependencies).
 
 == Download ==
 
@@ -57,31 +58,31 @@ $cd vlcj-apps
 Download the application package from the [http://code.google.com/p/vlcj-apps/downloads/list downloads] page, or:
 
 {{{
-$wget http://vlcj-apps.googlecode.com/files/vlcj-radio-1.0.0-dist.tgz
+$wget http://vlcj-apps.googlecode.com/files/vlcj-radio-1.1.0-dist.tgz
 }}}
 
 Unpack the archive to a directory on your local disk.
 
 {{{
-$tar -xzf vlcj-radio-1.0.0-dist.tgz
+$tar -xzf vlcj-radio-1.1.0-dist.tgz
 }}}
 
-This will create a directory named "vlcj-radio-1.0.0":
+This will create a directory named "vlcj-radio-1.1.0":
 
 {{{
-$cd vlcj-radio-1.0.0
+$cd vlcj-radio-1.1.0
 }}}
 
 == Starting the Application ==
 
 {{{
-$java -jar vlcj-radio-1.0.0.jar
+$java -jar vlcj-radio-1.1.0.jar
 }}}
 
 You can enable vlcj logging if you like:
 
 {{{
-$java -Dvlcj.log=DEBUG -jar vlcj-radio-1.0.0.jar
+$java -Dvlcj.log=DEBUG -jar vlcj-radio-1.1.0.jar
 }}}
 
 == Usage ==
@@ -90,13 +91,13 @@ This application stores files in a directory called "vlcj-radio" in your user ho
 
 After launching the application the main window will appear.
 
-First the radio station directory is fetched, in a background thread, from xiph.org and cached to a local file. 
+First the radio station directories are fetched, in a background thread, from a local cache if available and if not from the appropriate internet directory.
 
-On subsequent launches of the application the directory file is only downloaded if the server reports the last modified date is different to that of the locally cached file. This saves the overhead of downloading an approximately 2Mb directory file each time you start the application. This behaviour would be more useful if the directory did not include a "current song" element, in practice the directory file might be changing regularly.
+If the local cache files somehow gets corrupted you can simply delete them and they will be fetched again the next time you start the application.
 
-If this file somehow gets corrupted you can simply delete it and it will be fetched the next time you start the application.
+To force an update of the cached files, you use "Update Directory" on the application "Radio" menu.
 
-When the directory file has finished loading, you will then see a scrolling table of radio stations and a set of search controls.
+When the directories have finished loading, you will then see a scrolling table of radio stations and a set of search controls.
 
 You can sort, in ascending or descending order, by clicking on the table column headers. The sort can work across multiple columns. To reset the sort back to a single column you double-click the column header.
 
@@ -104,9 +105,9 @@ The search controls implement a live filter on the list of radio stations so you
 
 When you have found a radio station you want to listen to, double-click the corresponding table row or select the row and click the "Play" button.
 
-The streaming should start after a very brief pause. 
+The streaming should start after a brief pause. Some streams may take a little longer to start.
 
-If the streaming does not start within a second or so it is likely the radio station you selected is currently off-line. There is no guarantee that every station in the directory is on-line.
+If the streaming does not start within five seconds or so it is likely the radio station you selected is currently off-line. There is no guarantee that every station in the directory is on-line.
 
 There are no volume controls in the application itself, you're expected to use your desktop volume applet/controls.
 
