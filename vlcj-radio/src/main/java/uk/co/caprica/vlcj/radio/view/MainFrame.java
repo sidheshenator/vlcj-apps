@@ -41,6 +41,8 @@ import javax.swing.event.ListSelectionListener;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.radio.model.DirectoryEntry;
 
+// TODO need to add special case handling for the javascript: radio stations (need to scrape the page and search for the streaming url)
+
 /**
  * Main application frame.
  * <p>
