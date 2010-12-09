@@ -31,33 +31,39 @@ public class IndymediaDirectoryEntry implements DirectoryEntry {
   /**
    * Name of the station.
    */
-  @Element
-  private final String name;
+  @Element(required = false)
+  private String name;
 
   /**
    * Streaming URL for the audio.
    */
   @Element
-  private final String url;
+  private String url;
   
   /**
    * The (media) type of the server.
    */
-  @Element
-  private final String type;
+  @Element(required = false)
+  private String type;
   
   /**
    * Bit-rate of the stream.
    */
-  @Element
-  private final String bitRate;
+  @Element(required = false)
+  private String bitRate;
   
   /**
    * Genre.
    */
-  @Element
-  private final String genre;
+  @Element(required = false)
+  private String genre;
 
+  /**
+   * Default constructor (required for XML binding).
+   */
+  public IndymediaDirectoryEntry() {
+  }
+  
   /**
    * Create a directory entry.
    * 
