@@ -41,6 +41,12 @@ public class IcecastDirectory implements Directory {
   @ElementList(inline = true, entry = "entry")
   private List<IcecastDirectoryEntry> entries = new ArrayList<IcecastDirectoryEntry>();
 
+  /**
+   * Default constructor (required for XML binding).
+   */
+  public IcecastDirectory() {
+  }
+  
   @Override
   public List<? extends DirectoryEntry> entries() {
     return Collections.unmodifiableList(entries);

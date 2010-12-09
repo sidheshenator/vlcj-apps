@@ -41,6 +41,12 @@ public class IndymediaDirectory implements Directory {
   private List<IndymediaDirectoryEntry> entries;
 
   /**
+   * Default constructor (required for XML binding).
+   */
+  public IndymediaDirectory() {
+  }
+  
+  /**
    * Create a directory.
    * 
    * @param entries directory entries.

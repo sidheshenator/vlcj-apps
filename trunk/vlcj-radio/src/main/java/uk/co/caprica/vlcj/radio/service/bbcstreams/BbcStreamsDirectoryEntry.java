@@ -32,13 +32,19 @@ public class BbcStreamsDirectoryEntry implements DirectoryEntry {
    * Name of the station.
    */
   @Element
-  private final String name;
+  private String name;
   
   /**
    * Streaming URL for the audio.
    */
   @Element
-  private final String url;
+  private String url;
+  
+  /**
+   * Default constructor (required for XML binding).
+   */
+  public BbcStreamsDirectoryEntry() {
+  }
   
   /**
    * Create a directory entry.

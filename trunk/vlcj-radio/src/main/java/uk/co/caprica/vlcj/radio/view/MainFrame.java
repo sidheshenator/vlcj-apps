@@ -74,6 +74,18 @@ public class MainFrame extends JFrame {
     JMenu radioMenu = new JMenu("Radio");
     radioMenu.setMnemonic('r');
     
+    JMenuItem radioUpdateDirectoryMenuItem = new JMenuItem("Update Directory");
+    radioUpdateDirectoryMenuItem.setMnemonic('u');
+    radioUpdateDirectoryMenuItem.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        directoryView.updateDirectory();
+      }
+    });
+    radioMenu.add(radioUpdateDirectoryMenuItem);
+    
+    radioMenu.add(new JSeparator());
+    
     final JCheckBoxMenuItem radioEnableRecordingMenuItem = new JCheckBoxMenuItem("Enable Recording...");
     radioEnableRecordingMenuItem.setMnemonic('r');
     radioEnableRecordingMenuItem.addActionListener(new ActionListener() {

@@ -48,9 +48,13 @@ import javax.swing.event.ListSelectionListener;
 import net.miginfocom.swing.MigLayout;
 import uk.co.caprica.vlcj.radio.model.Directory;
 import uk.co.caprica.vlcj.radio.model.DirectoryEntry;
+import uk.co.caprica.vlcj.radio.service.CachedDirectoryService;
 import uk.co.caprica.vlcj.radio.service.DirectoryService;
 import uk.co.caprica.vlcj.radio.service.bbcstreams.BbcStreamsDirectoryService;
+import uk.co.caprica.vlcj.radio.service.bbcstreams.CachedBbcStreamsDirectoryService;
+import uk.co.caprica.vlcj.radio.service.icecast.CachedIcecastDirectoryService;
 import uk.co.caprica.vlcj.radio.service.icecast.IcecastDirectoryService;
+import uk.co.caprica.vlcj.radio.service.indymedia.CachedIndymediaDirectoryService;
 import uk.co.caprica.vlcj.radio.service.indymedia.IndymediaDirectoryService;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -207,74 +211,7 @@ public class DirectoryView extends JPanel {
    * media directory is loaded and parsed in a background thread.
    */
   public void start() {
-    executorService.execute(new Runnable() {
-      @Override
-      public void run() {
-        JFrame parentFrame = (JFrame)SwingUtilities.getAncestorOfClass(JFrame.class, DirectoryView.this);
-        final JDialog dlg = new JDialog(parentFrame, "Please wait...", true);
-        JPanel cp = new JPanel();
-        cp.setLayout(new MigLayout("fill, insets 16", "[c]", ""));
-        cp.add(new JLabel("Please wait, loading station directories..."), "wrap");
-        JProgressBar progressBar = new JProgressBar();
-        progressBar.setIndeterminate(true);
-        cp.add(progressBar, "growx");
-        dlg.setContentPane(cp);
-        dlg.setUndecorated(true);
-        dlg.setResizable(false);
-        dlg.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        dlg.pack();
-        dlg.setLocationRelativeTo(parentFrame);
-        
-        executorService.submit(new Runnable() {
-          @Override
-          public void run() {
-            dlg.setVisible(true);
-          }
-        });
-
-        // Load each directory individually, swallowing exceptions so we can
-        // continue with subsequent directories even on error...
-        
-        DirectoryService directoryService;
-        Directory directory;
-        
-        try {
-          directoryService = new IcecastDirectoryService();
-          directory = directoryService.directory();
-          directoryEventList.getReadWriteLock().writeLock().lock();
-          directoryEventList.addAll(directory.entries());
-          directoryEventList.getReadWriteLock().writeLock().unlock();
-        }
-        catch(Throwable t) {
-          System.err.println("Warning: failed to read Icecast directory");
-        }
-
-        try {
-          directoryService = new BbcStreamsDirectoryService();
-          directory = directoryService.directory();
-          directoryEventList.getReadWriteLock().writeLock().lock();
-          directoryEventList.addAll(directory.entries());
-          directoryEventList.getReadWriteLock().writeLock().unlock();
-        }
-        catch(Throwable t) {
-          System.err.println("Warning: failed to read BBCStreams directory");
-        }
-
-        try {
-          directoryService = new IndymediaDirectoryService();
-          directory = directoryService.directory();
-          directoryEventList.getReadWriteLock().writeLock().lock();
-          directoryEventList.addAll(directory.entries());
-          directoryEventList.getReadWriteLock().writeLock().unlock();
-        }
-        catch(Throwable t) {
-          System.err.println("Warning: failed to read Indymedia directory");
-        }
-        
-        dlg.setVisible(false);
-        dlg.dispose();
-      }
-    });
+    loadDirectory();
   }
   
   public DirectoryEntry getSelectedEntry() {
@@ -297,6 +234,14 @@ public class DirectoryView extends JPanel {
 
   public void setNowPlaying(String customEntry) {
     statusPanel.setModel(customEntry);
+  }
+
+  private void loadDirectory() {
+    executorService.execute(new UpdateDirectoryRunnable(false));
+  }
+  
+  public void updateDirectory() {
+    executorService.execute(new UpdateDirectoryRunnable(true));
   }
 
   private void fireEvent(String command) {
@@ -383,6 +328,107 @@ public class DirectoryView extends JPanel {
 
     public DirectoryTableModel(EventList<DirectoryEntry> source) {
       super(source, new DirectoryTableFormat());
+    }
+  }
+  
+  private class UpdateDirectoryRunnable implements Runnable {
+
+    private final boolean forceUpdate;
+    
+    private UpdateDirectoryRunnable(boolean forceUpdate) {
+      this.forceUpdate = forceUpdate;
+    }
+    
+    @Override
+    public void run() {
+      final JDialog dlg = createLoadingDialog();
+      
+      executorService.submit(new Runnable() {
+        @Override
+        public void run() {
+          dlg.setVisible(true);
+        }
+      });
+
+      // Clear the current directory
+      directoryEventList.getReadWriteLock().writeLock().lock();
+      directoryEventList.clear();
+      directoryEventList.getReadWriteLock().writeLock().unlock();
+      
+      // Load each directory individually, swallowing exceptions so we can
+      // continue with subsequent directories even on error...
+      
+      try {
+        loadDirectory(new IcecastDirectoryService(), new CachedIcecastDirectoryService(), forceUpdate);
+      }
+      catch(Throwable t) {
+        System.err.println("Warning: failed to retrieve Icecast directory");
+      }
+
+      try {
+        loadDirectory(new BbcStreamsDirectoryService(), new CachedBbcStreamsDirectoryService(), forceUpdate);
+      }
+      catch(Throwable t) {
+        System.err.println("Warning: failed to retrieve BBCStreams directory");
+      }
+
+      try {
+        loadDirectory(new IndymediaDirectoryService(), new CachedIndymediaDirectoryService(), forceUpdate);
+      }
+      catch(Throwable t) {
+        System.err.println("Warning: failed to retrieve Indymedia directory");
+      }
+      
+      dlg.setVisible(false);
+      dlg.dispose();
+    }
+
+    /**
+     * 
+     * 
+     * @return
+     */
+    private JDialog createLoadingDialog() {
+      JFrame parentFrame = (JFrame)SwingUtilities.getAncestorOfClass(JFrame.class, DirectoryView.this);
+      final JDialog dlg = new JDialog(parentFrame, "Please wait...", true);
+      JPanel cp = new JPanel();
+      cp.setLayout(new MigLayout("fill, insets 16", "[c]", ""));
+      cp.add(new JLabel("Please wait, loading station directories..."), "wrap");
+      JProgressBar progressBar = new JProgressBar();
+      progressBar.setIndeterminate(true);
+      cp.add(progressBar, "growx");
+      dlg.setContentPane(cp);
+      dlg.setUndecorated(true);
+      dlg.setResizable(false);
+      dlg.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+      dlg.pack();
+      dlg.setLocationRelativeTo(parentFrame);
+      return dlg;
+    }
+    
+    private Directory loadDirectory(DirectoryService directoryService, CachedDirectoryService cachedDirectoryService, boolean forceUpdate) {
+      // First try loading from the cache...
+      Directory directory = null;
+      if(!forceUpdate) {
+        try {
+          directory = cachedDirectoryService.directory();
+        }
+        catch(Throwable t) {
+          // Swallow this error so we can continue
+        }
+      }
+      // If the cached directory is not available, go to the source
+      if(directory == null) {
+        // This may throw an exception
+        directory = directoryService.directory();
+        cachedDirectoryService.store(directory);
+      }
+      // Update the UI
+      directoryEventList.getReadWriteLock().writeLock().lock();
+      directoryEventList.addAll(directory.entries());
+      directoryEventList.getReadWriteLock().writeLock().unlock();
+      // Finally, return the directory
+      return directory;
     }
   }
   

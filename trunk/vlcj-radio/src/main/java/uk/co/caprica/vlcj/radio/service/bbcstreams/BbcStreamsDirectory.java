@@ -41,6 +41,12 @@ public class BbcStreamsDirectory implements Directory {
   private List<BbcStreamsDirectoryEntry> entries;
 
   /**
+   * Default constructor (required for XML binding).
+   */
+  public BbcStreamsDirectory() {
+  }
+  
+  /**
    * Create a directory.
    * 
    * @param entries directory entries
