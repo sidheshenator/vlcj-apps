@@ -6,9 +6,9 @@
 
 A sample application built using vlcj and libvlc that streams internet radio.
 
-This application reads the Icecast server directory at xiph.org (the same thing
-that vlc itself does), and allows you to search that directory to play radio
-station audio streams of interest.
+This application reads various internet radio station directories and allows 
+you to search that combined directory to play radio station audio streams of 
+interest.
 
 
 == License ==
@@ -24,6 +24,8 @@ GlazedLists is distributed under the terms of the LGPL license.
 MIGLayout is distributed under the terms of the GPL license.
 
 The Simple XML framework is distributed under the terms of the Apache 2.0 license.
+
+HtmlUnit is distributed under the terms of the Apache 2.0 license.
 
 
 == Recording Streams ==
