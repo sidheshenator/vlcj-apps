@@ -22,6 +22,8 @@ package uk.co.caprica.vlcj.radio.service.listenlive;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.simpleframework.xml.Root;
+
 import uk.co.caprica.vlcj.radio.model.Directory;
 import uk.co.caprica.vlcj.radio.service.DirectoryService;
 
@@ -38,6 +40,11 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
  * <p>
  * There is web-service API or XML feed so this implementation scrapes all of 
  * the pages directly.
+ * <p>
+ * This directory provider returns some directory entries that are not simply
+ * "http://" URLs and instead launch another web-page to play the stream - 
+ * these stations therefore can not be played directly and require special
+ * handling.
  */
 public class ListenLiveDirectoryService implements DirectoryService {
 
