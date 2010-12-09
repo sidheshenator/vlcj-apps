@@ -75,9 +75,14 @@ public class ListenLiveDirectoryService implements DirectoryService {
         List<?> anchors = td.getByXPath("a");
         for(int i = 0; i < anchors.size(); i++) {
           HtmlAnchor a = (HtmlAnchor)anchors.get(i);
-          String url = a.getAttribute("href");
           String bitRate = a.asText();
-          entries.add(new ListenLiveDirectoryEntry(name, url, "", bitRate, genre)); 
+          String url = a.getAttribute("href");
+          
+          // FIXME
+          // for now these will be removed
+          if(!url.startsWith("javascript")) {
+            entries.add(new ListenLiveDirectoryEntry(name, url, "", bitRate, genre));
+          }
         }
       }
       
