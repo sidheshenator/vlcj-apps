@@ -76,10 +76,10 @@ public class StatusPanel extends JPanel {
   
   public void setModel(DirectoryEntry entry) {
     if(entry != null) {
-      nameValueLabel.setText("<html><b>" + entry.getName() != null ? entry.getName() : "" + "</b></html>");
-      genreValueLabel.setText("<html><b>" + entry.getGenre() != null ? entry.getGenre() : "" + "</b></html>");
+      nameValueLabel.setText("<html><b>" + (entry.getName() != null ? entry.getName() : "") + "</b></html>");
+      genreValueLabel.setText("<html><b>" + (entry.getGenre() != null ? entry.getGenre() : "") + "</b></html>");
       addressValueLabel.setText("<html><b>" + entry.getUrl() + "</b></html>");
-      typeValueLabel.setText("<html><b>" + entry.getType() != null ? entry.getType() : "" + "</b></html>");
+      typeValueLabel.setText("<html><b>" + (entry.getType() != null ? entry.getType() : "") + "</b></html>");
     }
     else {
       nameValueLabel.setText("<n/a>");
