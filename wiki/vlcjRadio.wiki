@@ -115,7 +115,7 @@ There are no volume controls in the application itself, you're expected to use y
 
 To enable stream recording you use the "Radio" menu and the "Enable Stream Recording" menu item. You will be shown an informational dialog box that tells you that the recording will begin/end the next time you play a stream.
 
-Recorded files will appear in a vlcj-radio inside your user home directory.
+Recorded files will appear in a vlcj-radio directory inside your user home directory.
 
 Some internet radio stations forbid the recording of audio streams - it is your responsibility to comply with any such terms and conditions. The basic operation of the record functionality provided by this application is no different than that provided by vlc itself.
 
