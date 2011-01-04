@@ -107,6 +107,9 @@ public class CachedDirectoryService implements DirectoryService {
   private File getCacheFile() {
     File userHomeDirectory = new File(System.getProperty("user.home"));
     File cacheDirectory = new File(userHomeDirectory, "vlcj-radio");
+    if(!cacheDirectory.exists()) {
+      cacheDirectory.mkdirs();
+    }
     return new File(cacheDirectory, cacheFileName);
   }
 }
