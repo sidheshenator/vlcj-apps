@@ -21,7 +21,7 @@
 
 <project name="vlcj-radio" default="all">
 
-  <property name="build.version" value="1.1.0"/>
+  <property name="build.version" value="1.1.1"/>
 
   <buildnumber/>
 
@@ -35,7 +35,7 @@
   <property name="compile.optimize" value="yes"/>
 	
   <path id="project.classes">
-    <pathelement location="lib/vlcj-1.1.4.jar"/>
+    <pathelement location="lib/vlcj-1.1.5.jar"/>
     <pathelement location="lib/jna.jar"/>
     <pathelement location="lib/platform.jar"/>
     <pathelement location="lib/glazedlists-1.8.0_java15.jar"/>
