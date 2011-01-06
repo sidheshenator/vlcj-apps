@@ -58,31 +58,31 @@ $cd vlcj-apps
 Download the application package from the [http://code.google.com/p/vlcj-apps/downloads/list downloads] page, or:
 
 {{{
-$wget http://vlcj-apps.googlecode.com/files/vlcj-radio-1.1.0-dist.tgz
+$wget http://vlcj-apps.googlecode.com/files/vlcj-radio-1.1.1-dist.tgz
 }}}
 
 Unpack the archive to a directory on your local disk.
 
 {{{
-$tar -xzf vlcj-radio-1.1.0-dist.tgz
+$tar -xzf vlcj-radio-1.1.1-dist.tgz
 }}}
 
-This will create a directory named "vlcj-radio-1.1.0":
+This will create a directory named "vlcj-radio-1.1.1":
 
 {{{
-$cd vlcj-radio-1.1.0
+$cd vlcj-radio-1.1.1
 }}}
 
 == Starting the Application ==
 
 {{{
-$java -jar vlcj-radio-1.1.0.jar
+$java -jar vlcj-radio-1.1.1.jar
 }}}
 
 You can enable vlcj logging if you like:
 
 {{{
-$java -Dvlcj.log=DEBUG -jar vlcj-radio-1.1.0.jar
+$java -Dvlcj.log=DEBUG -jar vlcj-radio-1.1.1.jar
 }}}
 
 == Usage ==
