@@ -173,7 +173,7 @@ public class DirectoryView extends JPanel {
     customStationLabel = new JLabel("Custom Station:");
     customStationLabel.setDisplayedMnemonic('c');
     customStationTextField = new JTextField(60);
-    customStationTextField.setFocusAccelerator('c');
+    customStationTextField.setFocusAccelerator('m');
     customStationTextField.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
