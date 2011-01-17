@@ -46,6 +46,12 @@ This application has the following dependencies (all required Java library depen
   * Simple XML Framework 2.4;
   * !HtmlUnit 2.8 (and all associated dependencies).
 
+== Implementation ==
+
+Most of the code actually deals with the Swing user interface and the downloading of remote station directory information.
+
+The amount of code that deals purely with vlcj and vlc is minimal and demonstrates how trivially easy it is to play audio media with vlc.
+
 == Download ==
 
 Prepare a local directory:
