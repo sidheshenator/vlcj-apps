@@ -55,7 +55,7 @@ public class IndymediaDirectoryService implements DirectoryService {
       while(!finished) {
         HtmlPage page = webClient.getPage("http://radio.indymedia.org/en/yp?page=" + pageIndex++);
 
-        List<?> elements = page.getByXPath("//div[@class='content_main']//div[@class='view-content']//table[1]/tbody/tr");
+        List<?> elements = page.getByXPath("//div[@id='block-system-main']//div[@class='view-content']//table[1]/tbody/tr");
         for(Object element : elements) {
           HtmlTableRow tr = (HtmlTableRow)element;
           
