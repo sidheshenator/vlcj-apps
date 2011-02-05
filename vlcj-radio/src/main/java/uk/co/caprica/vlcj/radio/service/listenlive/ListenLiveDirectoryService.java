@@ -36,8 +36,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
  * Implementation of a streaming media station directory service that gets the
  * directory of streams from the ListenLive web-site.
  * <p>
- * There is web-service API or XML feed so this implementation scrapes all of 
- * the pages directly.
+ * There is no web-service API or XML feed so this implementation scrapes all 
+ * of the pages directly.
  * <p>
  * This directory provider returns some directory entries that are not simply
  * "http://" URLs and instead launch another web-page to play the stream - 
