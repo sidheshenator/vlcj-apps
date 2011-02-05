@@ -58,6 +58,8 @@ import uk.co.caprica.vlcj.radio.service.indymedia.CachedIndymediaDirectoryServic
 import uk.co.caprica.vlcj.radio.service.indymedia.IndymediaDirectoryService;
 import uk.co.caprica.vlcj.radio.service.listenlive.CachedListenLiveDirectoryService;
 import uk.co.caprica.vlcj.radio.service.listenlive.ListenLiveDirectoryService;
+import uk.co.caprica.vlcj.radio.service.musicradio.CachedMusicRadioDirectoryService;
+import uk.co.caprica.vlcj.radio.service.musicradio.MusicRadioDirectoryService;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
@@ -386,6 +388,13 @@ public class DirectoryView extends JPanel {
       }
       catch(Throwable t) {
         System.err.println("Warning: failed to retrieve ListenLive directory");
+      }
+      
+      try {
+        loadDirectory(new MusicRadioDirectoryService(), new CachedMusicRadioDirectoryService(), forceUpdate);
+      }
+      catch(Throwable t) {
+        System.err.println("Warning: failed to retrieve MusicRadio directory");
       }
       
       dlg.setVisible(false);
