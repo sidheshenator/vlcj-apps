@@ -35,8 +35,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
  * Implementation of a streaming media station directory service that gets the
  * directory of streams from the Indymedia web-site.
  * <p>
- * There is web-service API or XML feed so this implementation scrapes all of 
- * the pages directly.
+ * There is no web-service API or XML feed so this implementation scrapes all 
+ * of the pages directly.
  */
 public class IndymediaDirectoryService implements DirectoryService {
 
