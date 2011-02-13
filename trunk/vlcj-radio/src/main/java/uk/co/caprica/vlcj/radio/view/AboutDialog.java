@@ -65,8 +65,8 @@ public class AboutDialog extends BaseDialog {
     Version vlcjVersion = VlcjVersion.getVersion();
     Version libVlcVersion = LibVlcVersion.getVersion();
 
-    playerVersionLabel = new JLabel("vlcj radio 1.2.0");
-    copyrightLabel = new JLabel("(C)2010");
+    playerVersionLabel = new JLabel("vlcj radio 1.2.1");
+    copyrightLabel = new JLabel("(C)2010, 2011");
     vendorHomePageLabel = new LinkLabel("Caprica Software Limited", "http://www.capricasoftware.co.uk");
     termsLabel = new JLabel("This software is disributed under the terms of the");
     licensePageLabel = new LinkLabel("GPL 3.0 License", "http://www.gnu.org/licenses/gpl-3.0.html");
