@@ -21,7 +21,11 @@ package uk.co.caprica.vlcj.radio.service.icecast;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 import org.simpleframework.xml.core.Persister;
 
@@ -53,10 +57,24 @@ public class IcecastDirectoryService implements DirectoryService {
 
   @Override
   public Directory directory() {
+    HttpURLConnection urlConnection = null;
     InputStream in = null;
     try {
       URL url = new URL(DIRECTORY_URL);
-      return persister.read(IcecastDirectory.class, url.openStream());
+      urlConnection = (HttpURLConnection)url.openConnection();
+      // The IceCast directory can be very big, but it can be compressed
+      urlConnection.setRequestProperty("Accept-Encoding", "gzip, deflate");
+      String encoding = urlConnection.getContentEncoding();
+      if("gzip".equalsIgnoreCase(encoding)) {
+        in = new GZIPInputStream(urlConnection.getInputStream());
+      }
+      else if("deflate".equalsIgnoreCase(encoding)) {
+        in = new InflaterInputStream(urlConnection.getInputStream(), new Inflater(true));
+      }
+      else {
+        in = urlConnection.getInputStream();
+      }
+      return persister.read(IcecastDirectory.class, in);
     }
     catch(Exception e) {
       throw new RuntimeException("Failed to get directory", e);
@@ -68,6 +86,9 @@ public class IcecastDirectoryService implements DirectoryService {
         }
         catch(IOException e) {
         }
+      }
+      if(urlConnection != null) {
+        urlConnection.disconnect();
       }
     }
   }
