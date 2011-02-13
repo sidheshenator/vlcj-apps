@@ -39,7 +39,7 @@ $sudo apt-get install libavcodec-extra-52
 
 This application has the following dependencies (all required Java library dependencies are included in the download package):
 
-  * vlcj 1.1.4;
+  * vlcj 1.1.5;
   * JNA 3.2.7 (jna.jar and platform.jar);
   * MiGLayout 3.7.3.1;
   * !GlazedLists 1.8.0;
@@ -50,7 +50,7 @@ This application has the following dependencies (all required Java library depen
 
 Most of the code actually deals with the Swing user interface and the downloading of remote station directory information.
 
-The amount of code that deals purely with vlcj and vlc is minimal and demonstrates how trivially easy it is to play audio media with vlc.
+The amount of code that deals purely with vlcj and vlc is minimal and demonstrates how trivially easy it is to play audio media in Java with vlc.
 
 == Download ==
 
@@ -64,31 +64,31 @@ $cd vlcj-apps
 Download the application package from the [http://code.google.com/p/vlcj-apps/downloads/list downloads] page, or:
 
 {{{
-$wget http://vlcj-apps.googlecode.com/files/vlcj-radio-1.1.1-dist.tgz
+$wget http://vlcj-apps.googlecode.com/files/vlcj-radio-1.2.1-dist.tgz
 }}}
 
 Unpack the archive to a directory on your local disk.
 
 {{{
-$tar -xzf vlcj-radio-1.1.1-dist.tgz
+$tar -xzf vlcj-radio-1.2.1-dist.tgz
 }}}
 
-This will create a directory named "vlcj-radio-1.1.1":
+This will create a directory named "vlcj-radio-1.2.1":
 
 {{{
-$cd vlcj-radio-1.1.1
+$cd vlcj-radio-1.2.1
 }}}
 
 == Starting the Application ==
 
 {{{
-$java -jar vlcj-radio-1.1.1.jar
+$java -jar vlcj-radio-1.2.1.jar
 }}}
 
 You can enable vlcj logging if you like:
 
 {{{
-$java -Dvlcj.log=DEBUG -jar vlcj-radio-1.1.1.jar
+$java -Dvlcj.log=DEBUG -jar vlcj-radio-1.2.1.jar
 }}}
 
 == Usage ==
