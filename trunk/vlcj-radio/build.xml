@@ -21,7 +21,7 @@
 
 <project name="vlcj-radio" default="all">
 
-  <property name="build.version" value="1.2.0"/>
+  <property name="build.version" value="1.2.1"/>
 
   <buildnumber/>
 
