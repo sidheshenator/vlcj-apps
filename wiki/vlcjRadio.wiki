@@ -131,4 +131,6 @@ It is entirely your responsibility what you record and encode.
 
 == Notes ==
 
-The IceCast directory service at xiph.org is currently restricted to returning 1000 station entries even though there are around 9000 stations in the directory.
+It would be very easy to build upon this application to broadcast the radio station stream to devices across a local network.
+
+The !IceCast directory service at xiph.org is currently restricted to returning 1000 station entries even though there are around 9000 stations in the directory.
