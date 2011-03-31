@@ -1,0 +1,33 @@
+
+                             === vlcj Tube ===
+
+
+== Introduction ==
+
+A sample application built using vlcj and libvlc that lets you browse and play
+YouTube media.
+
+
+== License ==
+
+vlcj is distributed under the terms of the GPL-3 license.
+
+vlc is distributed under the terms of the GPL license.
+
+JNA is distributed under the terms of the LGPL license.
+
+
+== Distribution Contents ==
+
+The main artefacts are:
+
+  vlcj-tube-<version>.jar           - jar file for compiling and running against
+  vlcj-tube-<version>-sources.jar   - all source code
+  vlcj-tube-<version>-javadoc.jar   - generated javadoc API documentation
+
+
+== Feedback and Contact Details ==
+
+I'd be happy to hear about any interesting uses you may put this to!
+
+email: mark.lee <at> capricasoftware.co.uk
