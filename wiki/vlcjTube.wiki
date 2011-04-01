@@ -35,6 +35,8 @@ The entire application is contained within a single small class file. The majori
 
 == Download ==
 
+Since SWT is used and there is no unified SWT jar for all platforms, you must download the correct package for your platform. These instructions assume "linux-x86_64". See the downloads page for available packages.
+
 Prepare a local directory:
 
 {{{
