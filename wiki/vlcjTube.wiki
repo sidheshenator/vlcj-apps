@@ -19,7 +19,7 @@ On clicking a !YouTube media link the video is played in an embedded vlcj media 
 The prerequisites are:
 
   * a Java 6 (1.6) run-time environment;
-  * vlc 1.1.4 (or later, the later the version the better).
+  * vlc 1.2.0 (from git or a snapshot download - currently in development).
 
 == Dependencies ==
 
@@ -87,5 +87,7 @@ Press the ESCAPE key to quit out of playing video.
 There are no volume controls in the application itself, you're expected to use your desktop volume applet/controls.
 
 == Notes ==
+
+The !YouTube web page structure is subject to change and this can make vlc unable to play the media. You should always have the latest vlc version to make sure you have the properly working scripts that parse the !YouTube pages to find the media.
 
 There is plenty of scope to build upon and improve this application.
