@@ -29,6 +29,8 @@
     <format property="build.timestamp" pattern="yyyy-MM-dd HH:mm:ss"/>
   </tstamp>
 	
+	<property name="platform"         value="linux-x86_64"/>
+	
   <property name="source.version"   value="1.6"/>
   <property name="target.version"   value="1.6"/>
   <property name="compile.debug"    value="yes"/>
@@ -38,7 +40,7 @@
     <pathelement location="lib/vlcj-1.2.0.jar"/>
     <pathelement location="lib/jna.jar"/>
     <pathelement location="lib/platform.jar"/>
-    <pathelement location="lib/swt.jar"/>
+    <pathelement location="lib/${platform}/swt.jar"/>
   </path>
   
 	<pathconvert property="manifest.classpath" pathsep=" ">
@@ -99,7 +101,8 @@
     <copy todir="dist">
       <fileset dir="build" includes="*.jar"/>
     	<fileset dir="lib" includes="*.jar"/>
-      <fileset dir="doc" includes="gpl.txt,README.LICENSE,README"/>
+    	<fileset dir="lib/${platform}" includes="*.jar"/>
+      <fileset dir="doc" includes="gpl.txt,lgpl-3.0.txt,README,SWT.License.epl-v10.html"/>
     </copy>
   </target>
   
@@ -107,13 +110,13 @@
     <!--
     <delete dir="package"/>
     -->
-    <mkdir dir="package/${ant.project.name}-${build.version}"/>
-    <copy todir="package/${ant.project.name}-${build.version}">
+    <mkdir dir="package/${ant.project.name}-${build.version}-${platform}"/>
+    <copy todir="package/${ant.project.name}-${build.version}-${platform}">
       <fileset dir="dist" excludes="**/*.log"/>
     </copy>
-    <tar tarfile="package/${ant.project.name}-${build.version}-dist.tgz" basedir="package" includes="${ant.project.name}-${build.version}/**/*" compression="gzip"/>
-    <zip zipfile="package/${ant.project.name}-${build.version}-dist.zip" basedir="package" includes="${ant.project.name}-${build.version}/**/*"/>
-    <delete dir="package/${ant.project.name}-${build.version}"/>
+    <tar tarfile="package/${ant.project.name}-${build.version}-${platform}.tgz" basedir="package" includes="${ant.project.name}-${build.version}-${platform}/**/*" compression="gzip"/>
+    <zip zipfile="package/${ant.project.name}-${build.version}-${platform}.zip" basedir="package" includes="${ant.project.name}-${build.version}-${platform}/**/*"/>
+    <delete dir="package/${ant.project.name}-${build.version}-${platform}"/>
   </target>
 	
   <target name="rebuild" depends="clean, jar" description="Perform a clean build to produce a new jar file"/>
