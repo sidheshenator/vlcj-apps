@@ -210,7 +210,7 @@ public class MainFrame extends JFrame {
       return new File(saveDirectory, sb.toString());
     }
     catch(MalformedURLException e) {
-      throw new RuntimeException("Unable to a URL for '" + address + "'");
+      throw new RuntimeException("Unable to create a URL for '" + address + "'");
     }
   }
 }
