@@ -256,7 +256,7 @@ public class VlcjTube {
    * Create the native media player components.
    */
   private void createMediaPlayer() {
-    mediaPlayerFactory = new MediaPlayerFactory();
+    mediaPlayerFactory = new MediaPlayerFactory("--no-video-title-show");
     mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
     mediaPlayer.setPlaySubItems(true);
     videoSurface = mediaPlayerFactory.newVideoSurface(videoSurfaceCanvas);
