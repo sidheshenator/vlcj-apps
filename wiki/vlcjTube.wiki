@@ -76,7 +76,7 @@ $java -Dvlcj.log=DEBUG -jar vlcj-tube-1.0.0.jar
 
 == Usage ==
 
-After launching the application the main window will appear, presenting a web browser displaying the YouTube home page.
+After launching the application the main window will appear, presenting a web browser displaying the !YouTube home page.
 
 Use the web browser as normal to search for media to play. Clicking a media hyperlink will switch the display to an embedded media player and play it.
 
