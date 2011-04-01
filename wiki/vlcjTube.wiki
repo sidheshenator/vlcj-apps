@@ -2,11 +2,11 @@
 
 == Introduction ==
 
-This is an SWT rich-client application that uses vlcj and libvlc to browse and play YouTube media.
+This is an SWT rich-client application that uses vlcj and libvlc to browse and play !YouTube media.
 
-The application contains an embedded SWT browser control used to navigate around and search YouTube for media to play.
+The application contains an embedded SWT browser control used to navigate around and search !YouTube for media to play.
 
-On clicking a YouTube media link the video is played in an embedded vlcj media player.
+On clicking a !YouTube media link the video is played in an embedded vlcj media player.
 
 == Screenshots ==
 
@@ -45,19 +45,19 @@ $cd vlcj-apps
 Download the application package from the [http://code.google.com/p/vlcj-apps/downloads/list downloads] page, or:
 
 {{{
-$wget http://vlcj-apps.googlecode.com/files/vlcj-tube-1.0.0-dist.tgz
+$wget http://vlcj-apps.googlecode.com/files/vlcj-tube-1.0.0-linux-x86_64.tgz
 }}}
 
 Unpack the archive to a directory on your local disk.
 
 {{{
-$tar -xzf vlcj-tube-1.0.0-dist.tgz
+$tar -xzf vlcj-tube-1.0.0-linux-x86_64.tgz
 }}}
 
-This will create a directory named "vlcj-tube-1.0.0":
+This will create a directory named "vlcj-tube-1.0.0-linux-x86_64":
 
 {{{
-$cd vlcj-tube-1.2.1
+$cd vlcj-tube-1.0.0-linux-x86_64
 }}}
 
 == Starting the Application ==
