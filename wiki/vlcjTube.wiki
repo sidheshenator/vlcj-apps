@@ -19,7 +19,7 @@ On clicking a !YouTube media link the video is played in an embedded vlcj media 
 The prerequisites are:
 
   * a Java 6 (1.6) run-time environment;
-  * vlc 1.2.0 (from git or a snapshot download - currently in development).
+  * vlc 1.1.9 or vlc 1.2.0 (from git or a snapshot download - currently in development).
 
 == Dependencies ==
 
