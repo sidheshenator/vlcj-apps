@@ -21,6 +21,9 @@ package uk.co.caprica.vlcj.tube;
 
 import java.awt.Canvas;
 import java.awt.Frame;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,6 +48,8 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import uk.co.caprica.vlcj.player.MediaPlayer;
@@ -52,6 +57,7 @@ import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
+import uk.co.caprica.vlcj.x.LibXUtil;
 
 /**
  * An application that embeds a native Web Browser component and a native
@@ -63,9 +69,6 @@ import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
  * Press the F11 key to toggle full-screen mode.
  * <p>
  * Press the ESCAPE key to quit the current video and return to the browser.
- * <p>
- * SWT has some focus issues, you may need to click the mouse to return focus
- * to the window before the key-bindings have an effect.
  * <p> 
  * WebKit is a better choice than Mozilla for the embedded browser.
  * <pre>
@@ -120,6 +123,7 @@ public class VlcjTube {
    * @throws Exception if an error occurs
    */
   public static void main(String[] args) throws Exception {
+    LibXUtil.initialise();
     new VlcjTube().start();
   }
   
@@ -146,7 +150,8 @@ public class VlcjTube {
 
     shell = new Shell(display);
     shell.setLayout(stackLayout);
-
+    shell.setSize(1200, 900);
+    
     browserPanel = new Composite(shell, SWT.BORDER);
     browserPanel.setLayout(new FillLayout());
     browserPanel.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
@@ -167,9 +172,26 @@ public class VlcjTube {
 
     showBrowser();
     
+    display.addFilter(SWT.KeyDown, new Listener() {
+      public void handleEvent(Event evt) {
+        switch(evt.keyCode) {
+          case SWT.ESC:
+            if(stackLayout.topControl == videoPanel) {
+              mediaPlayer.stop();
+              showBrowser();
+            }
+            break;
+          
+          case SWT.F11:
+            shell.setFullScreen(!shell.getFullScreen());
+            break;
+        }
+      }
+    });
+    
     shell.addShellListener(new ShellAdapter() {
       @Override
-      public void shellClosed(ShellEvent arg0) {
+      public void shellClosed(ShellEvent evt) {
         mediaPlayer.release();
         mediaPlayerFactory.release();
       }
@@ -177,7 +199,7 @@ public class VlcjTube {
     
     browser.addTitleListener(new TitleListener() {
       public void changed(TitleEvent e) {
-        shell.setText(e.title);
+        shell.setText("vlcj - " + e.title);
       }
     });
     
@@ -187,9 +209,14 @@ public class VlcjTube {
         Matcher matcher = watchLinkPattern.matcher(evt.location);
         if(matcher.matches()) {
           evt.doit = false;
-          System.out.println("new movie: " + evt.location);
           showVideo();
-          mediaPlayer.playMedia(evt.location);
+          boolean saveAudio = false;
+          if(saveAudio) {
+            mediaPlayer.playMedia(evt.location, getRecordAudioMediaOptions("vlcj-tube"));
+          }
+          else {
+            mediaPlayer.playMedia(evt.location);
+          }
         }
       }
     });
@@ -198,9 +225,6 @@ public class VlcjTube {
       @Override
       public void keyReleased(KeyEvent e) {
         switch(e.keyCode) {
-          case SWT.F11:
-            shell.setFullScreen(!shell.getFullScreen());
-            break;
         }
       }
     });
@@ -209,14 +233,6 @@ public class VlcjTube {
       @Override
       public void keyReleased(KeyEvent e) {
         switch(e.keyCode) {
-          case SWT.ESC:
-            mediaPlayer.stop();
-            showBrowser();
-            break;
-
-          case SWT.F11:
-            shell.setFullScreen(!shell.getFullScreen());
-            break;
         }
       }
     });
@@ -298,5 +314,33 @@ public class VlcjTube {
   private void showView(Composite view) {
     stackLayout.topControl = view;
     shell.layout();
+  }
+
+  // FIXME with saving audio - either there's a problem with 1.1.x and duplicate display (plays locally but audio is corrupted)
+  //       or with 1.2.x there's a problem with duplicate=display generally (doesn't play locally) but at least the audio is not corrupted
+  //       don't know yet if 1.1.x works without duplicate=display
+  
+  private String[] getRecordAudioMediaOptions(String name) {
+    File file = getFile(name);
+    StringBuilder sb = new StringBuilder(200);
+    sb.append("sout=#transcode{acodec=mp3,channels=2,ab=192,samplerate=44100,vcodec=dummy}:standard{mux=raw,access=file,dst=");
+//    sb.append("sout=#transcode{acodec=mp3,channels=2,ab=192,samplerate=44100,vcodec=dummy}:duplicate{dst=display,dst=std{access=file,mux=raw,dst=");
+    sb.append(file.getPath());
+    sb.append("}}");
+    return new String[] {sb.toString()};
+  }
+
+  private File getFile(String name) {
+    StringBuilder sb = new StringBuilder(100);
+    sb.append(name);
+    sb.append('-');
+    sb.append(new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()));
+    sb.append(".mp3");
+    File userHomeDirectory = new File(System.getProperty("user.home"));
+    File saveDirectory = new File(userHomeDirectory, "vlcj-tube");
+    if(!saveDirectory.exists()) {
+      saveDirectory.mkdirs();
+    }
+    return new File(saveDirectory, sb.toString());
   }
 }
