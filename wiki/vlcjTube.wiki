@@ -27,7 +27,7 @@ This application has the following dependencies (most required Java library depe
 
   * vlcj 1.2.0;
   * JNA 3.2.7 (jna.jar and platform.jar);
-  * SWT 3.6 (OS-dependant)
+  * SWT 3.7M6 (OS-dependant)
 
 == Implementation ==
 
