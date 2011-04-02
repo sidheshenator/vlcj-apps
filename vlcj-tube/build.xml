@@ -40,6 +40,7 @@
     <pathelement location="lib/vlcj-1.2.0.jar"/>
     <pathelement location="lib/jna.jar"/>
     <pathelement location="lib/platform.jar"/>
+    <pathelement location="lib/miglayout-3.7.4-swt.jar"/>
     <pathelement location="lib/${platform}/swt.jar"/>
   </path>
   
