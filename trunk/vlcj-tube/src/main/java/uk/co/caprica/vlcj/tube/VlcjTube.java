@@ -21,9 +21,6 @@ package uk.co.caprica.vlcj.tube;
 
 import java.awt.Canvas;
 import java.awt.Frame;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -208,13 +205,18 @@ public class VlcjTube {
         Matcher matcher = watchLinkPattern.matcher(evt.location);
         if(matcher.matches()) {
           evt.doit = false;
-          showVideo();
-          boolean saveAudio = false;
-          if(saveAudio) {
-            mediaPlayer.playMedia(evt.location, getRecordAudioMediaOptions("vlcj-tube"));
-          }
-          else {
-            mediaPlayer.playMedia(evt.location);
+          
+          PlayMediaDialog dialog = new PlayMediaDialog(shell);
+          PlayMediaOptions playMediaOptions = dialog.open();
+          
+          if(playMediaOptions != null) {
+            showVideo();
+            if(playMediaOptions.isSaveAudio()) {
+              mediaPlayer.playMedia(evt.location, playMediaOptions.getMediaOptions());
+            }
+            else {
+              mediaPlayer.playMedia(evt.location);
+            }
           }
         }
       }
@@ -313,33 +315,5 @@ public class VlcjTube {
   private void showView(Composite view) {
     stackLayout.topControl = view;
     shell.layout();
-  }
-
-  // FIXME with saving audio - either there's a problem with 1.1.x and duplicate display (plays locally but audio is corrupted)
-  //       or with 1.2.x there's a problem with duplicate=display generally (doesn't play locally) but at least the audio is not corrupted
-  //       don't know yet if 1.1.x works without duplicate=display
-  
-  private String[] getRecordAudioMediaOptions(String name) {
-    File file = getFile(name);
-    StringBuilder sb = new StringBuilder(200);
-    sb.append("sout=#transcode{acodec=mp3,channels=2,ab=192,samplerate=44100,vcodec=dummy}:standard{mux=raw,access=file,dst=");
-//    sb.append("sout=#transcode{acodec=mp3,channels=2,ab=192,samplerate=44100,vcodec=dummy}:duplicate{dst=display,dst=std{access=file,mux=raw,dst=");
-    sb.append(file.getPath());
-    sb.append("}}");
-    return new String[] {sb.toString()};
-  }
-
-  private File getFile(String name) {
-    StringBuilder sb = new StringBuilder(100);
-    sb.append(name);
-    sb.append('-');
-    sb.append(new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()));
-    sb.append(".mp3");
-    File userHomeDirectory = new File(System.getProperty("user.home"));
-    File saveDirectory = new File(userHomeDirectory, "vlcj-tube");
-    if(!saveDirectory.exists()) {
-      saveDirectory.mkdirs();
-    }
-    return new File(saveDirectory, sb.toString());
   }
 }
