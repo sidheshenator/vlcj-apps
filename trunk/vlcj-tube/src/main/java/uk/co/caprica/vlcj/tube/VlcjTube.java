@@ -286,6 +286,7 @@ public class VlcjTube {
               }
             }
             else {
+              encodeMode = false;
               showVideo();
               mediaPlayer.playMedia(evt.location);
             }
