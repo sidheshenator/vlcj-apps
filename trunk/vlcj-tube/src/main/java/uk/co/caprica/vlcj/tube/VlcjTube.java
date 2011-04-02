@@ -152,16 +152,15 @@ public class VlcjTube {
     shell.setLayout(stackLayout);
     shell.setSize(1200, 900);
     
-    browserPanel = new Composite(shell, SWT.BORDER);
+    browserPanel = new Composite(shell, SWT.NONE);
     browserPanel.setLayout(new FillLayout());
-    browserPanel.setBackground(display.getSystemColor(SWT.COLOR_BLUE));
 
     browser = new Browser(browserPanel, SWT.NONE);
     browser.setJavascriptEnabled(true);
     
-    videoPanel = new Composite(shell, SWT.BORDER);
+    videoPanel = new Composite(shell, SWT.NONE);
     videoPanel.setLayout(new FillLayout());
-    videoPanel.setBackground(display.getSystemColor(SWT.COLOR_RED));
+    videoPanel.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
     
     videoComposite = new Composite(videoPanel, SWT.EMBEDDED | SWT.NO_BACKGROUND);
     videoComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
