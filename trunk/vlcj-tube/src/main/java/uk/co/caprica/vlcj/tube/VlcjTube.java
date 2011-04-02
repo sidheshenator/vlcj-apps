@@ -275,6 +275,7 @@ public class VlcjTube {
               if(playMediaOptions != null) {
                 if(playMediaOptions.isSaveAudio()) {
                   encodeMode = true;
+                  positionProgressBar.setSelection(0);
                   showEncoder();
                   mediaPlayer.playMedia(evt.location, playMediaOptions.getMediaOptions());
                 }
