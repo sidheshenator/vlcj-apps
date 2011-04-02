@@ -24,6 +24,8 @@ import java.awt.Frame;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.miginfocom.swt.MigLayout;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.browser.Browser;
@@ -47,6 +49,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 
 import uk.co.caprica.vlcj.player.MediaPlayer;
@@ -62,6 +65,13 @@ import uk.co.caprica.vlcj.x.LibXUtil;
  * <p>
  * Activating a video hyperlink causes the video to be played by the embedded
  * native media player.
+ * <p>
+ * There are three modes possible when clicking a hyperlink:
+ * <ol>
+ *   <li>Ordinary click, play the video directly</li>
+ *   <li>Control-click, activate the play options dialog box (e.g. to save audio)</li>
+ *   <li>Shift-click, follow the hyperlink as normal</li>
+ * </ol>
  * <p>
  * Press the F11 key to toggle full-screen mode.
  * <p>
@@ -105,6 +115,8 @@ public class VlcjTube {
   private Frame videoFrame;
   private Canvas videoSurfaceCanvas;
   private CanvasVideoSurface videoSurface;
+  private Composite encoderPanel;
+  private ProgressBar positionProgressBar;
   private Cursor emptyCursor;
 
   /**
@@ -112,6 +124,21 @@ public class VlcjTube {
    */
   private MediaPlayerFactory mediaPlayerFactory;
   private EmbeddedMediaPlayer mediaPlayer;
+  
+  /**
+   * Track the state of the control key.
+   */
+  private boolean controlKeyDown;
+  
+  /**
+   * Track the state of the shift key.
+   */
+  private boolean shiftKeyDown;
+  
+  /**
+   * 
+   */
+  private boolean encodeMode;
   
   /**
    * Application entry point.
@@ -166,20 +193,54 @@ public class VlcjTube {
     videoSurfaceCanvas.setBackground(java.awt.Color.black);
     videoFrame.add(videoSurfaceCanvas);
 
+    encoderPanel = new Composite(shell, SWT.NONE);
+    encoderPanel.setLayout(new MigLayout("", "", ""));
+    
+    positionProgressBar = new ProgressBar(encoderPanel, SWT.SMOOTH);
+    positionProgressBar.setMinimum(0);
+    positionProgressBar.setMaximum(100);
+    
+    positionProgressBar.setLayoutData("width min:200");
+    
     showBrowser();
     
     display.addFilter(SWT.KeyDown, new Listener() {
       public void handleEvent(Event evt) {
         switch(evt.keyCode) {
           case SWT.ESC:
-            if(stackLayout.topControl == videoPanel) {
+            if(stackLayout.topControl == videoPanel || stackLayout.topControl == encoderPanel) {
               mediaPlayer.stop();
               showBrowser();
+            }
+            else if(stackLayout.topControl == browserPanel) {
+              browser.back();
             }
             break;
           
           case SWT.F11:
             shell.setFullScreen(!shell.getFullScreen());
+            break;
+            
+          case SWT.CONTROL:
+            controlKeyDown = true;
+            break;
+          
+          case SWT.SHIFT:
+            shiftKeyDown = true;
+            break;
+        }
+      }
+    });
+    
+    display.addFilter(SWT.KeyUp, new Listener() {
+      public void handleEvent(Event evt) {
+        switch(evt.keyCode) {
+          case SWT.CONTROL:
+            controlKeyDown = false;
+            break;
+
+          case SWT.SHIFT:
+            shiftKeyDown = false;
             break;
         }
       }
@@ -204,17 +265,28 @@ public class VlcjTube {
       public void changing(LocationEvent evt) {
         Matcher matcher = watchLinkPattern.matcher(evt.location);
         if(matcher.matches()) {
-          evt.doit = false;
-          
-          PlayMediaDialog dialog = new PlayMediaDialog(shell);
-          PlayMediaOptions playMediaOptions = dialog.open();
-          
-          if(playMediaOptions != null) {
-            showVideo();
-            if(playMediaOptions.isSaveAudio()) {
-              mediaPlayer.playMedia(evt.location, playMediaOptions.getMediaOptions());
+          if(!shiftKeyDown) {
+            evt.doit = false;
+            
+            if(controlKeyDown == true) {
+              PlayMediaDialog dialog = new PlayMediaDialog(shell);
+              PlayMediaOptions playMediaOptions = dialog.open();
+              
+              if(playMediaOptions != null) {
+                if(playMediaOptions.isSaveAudio()) {
+                  encodeMode = true;
+                  showEncoder();
+                  mediaPlayer.playMedia(evt.location, playMediaOptions.getMediaOptions());
+                }
+                else {
+                  encodeMode = false;
+                  showVideo();
+                  mediaPlayer.playMedia(evt.location);
+                }
+              }
             }
             else {
+              showVideo();
               mediaPlayer.playMedia(evt.location);
             }
           }
@@ -270,7 +342,12 @@ public class VlcjTube {
         // Similar to Swing, obey the SWT threading model...
         display.asyncExec(new Runnable() {
           public void run() {
-            showVideo();
+            if(encodeMode) {
+              showEncoder();
+            }
+            else {
+              showVideo();
+            }
           }
         });
       }
@@ -282,6 +359,17 @@ public class VlcjTube {
         display.asyncExec(new Runnable() {
           public void run() {
             showBrowser();
+          }
+        });
+      }
+
+      @Override
+      public void positionChanged(MediaPlayer mediaPlayer, final float newPosition) {
+        // Similar to Swing, obey the SWT threading model...
+        display.asyncExec(new Runnable() {
+          public void run() {
+            int value = Math.min(100, Math.round(newPosition * 100.0f));
+            positionProgressBar.setSelection(value);
           }
         });
       }
@@ -310,6 +398,10 @@ public class VlcjTube {
   
   private void showVideo() {
     showView(videoPanel);
+  }
+
+  private void showEncoder() {
+    showView(encoderPanel);
   }
   
   private void showView(Composite view) {
