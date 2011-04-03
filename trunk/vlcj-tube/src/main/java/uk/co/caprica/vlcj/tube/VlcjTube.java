@@ -48,6 +48,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
@@ -117,6 +118,7 @@ public class VlcjTube {
   private CanvasVideoSurface videoSurface;
   private Composite encoderPanel;
   private ProgressBar positionProgressBar;
+  private Label positionPercentageLabel;
   private Cursor emptyCursor;
 
   /**
@@ -194,13 +196,17 @@ public class VlcjTube {
     videoFrame.add(videoSurfaceCanvas);
 
     encoderPanel = new Composite(shell, SWT.NONE);
-    encoderPanel.setLayout(new MigLayout("", "", ""));
+    encoderPanel.setLayout(new MigLayout("center, center", "", ""));
     
     positionProgressBar = new ProgressBar(encoderPanel, SWT.SMOOTH);
     positionProgressBar.setMinimum(0);
     positionProgressBar.setMaximum(100);
+    positionProgressBar.setLayoutData("center, width min:400, wrap");
     
-    positionProgressBar.setLayoutData("width min:200");
+    positionPercentageLabel = new Label(encoderPanel, SWT.NONE);
+    positionPercentageLabel.setAlignment(SWT.CENTER);
+    positionPercentageLabel.setText("0%");
+    positionPercentageLabel.setLayoutData("center, width min:400");
     
     showBrowser();
     
@@ -276,6 +282,7 @@ public class VlcjTube {
                 if(playMediaOptions.isSaveAudio()) {
                   encodeMode = true;
                   positionProgressBar.setSelection(0);
+                  positionPercentageLabel.setText("0%");
                   showEncoder();
                   mediaPlayer.playMedia(evt.location, playMediaOptions.getMediaOptions());
                 }
@@ -367,13 +374,16 @@ public class VlcjTube {
 
       @Override
       public void positionChanged(MediaPlayer mediaPlayer, final float newPosition) {
-        // Similar to Swing, obey the SWT threading model...
-        display.asyncExec(new Runnable() {
-          public void run() {
-            int value = Math.min(100, Math.round(newPosition * 100.0f));
-            positionProgressBar.setSelection(value);
-          }
-        });
+        if(!positionProgressBar.isDisposed()) {
+          // Similar to Swing, obey the SWT threading model...
+          display.asyncExec(new Runnable() {
+            public void run() {
+              int value = Math.min(100, Math.round(newPosition * 100.0f));
+              positionProgressBar.setSelection(value);
+              positionPercentageLabel.setText(value + "%");
+            }
+          });
+        }
       }
     });
   }
