@@ -46,6 +46,8 @@ public class PlayMediaDialog extends Dialog {
   
   private Shell shell;
 
+  private File lastDirectory;
+
   private Group saveMediaGroup;
   private Button saveAudioButton;
   private Label saveAudioFileNameLabel;
@@ -58,16 +60,15 @@ public class PlayMediaDialog extends Dialog {
   private Button okButton;
   private Button cancelButton;
   
-  private String saveToDirectory;
-  
   private PlayMediaOptions playMediaOptions;
   
-  public PlayMediaDialog(Shell parent) {
-    this(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+  public PlayMediaDialog(Shell parent, File lastDirectory) {
+    this(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, lastDirectory);
   }
 
-  public PlayMediaDialog(Shell parent, int style) {
+  public PlayMediaDialog(Shell parent, int style, File lastDirectory) {
     super(parent, style);
+    this.lastDirectory = lastDirectory;
   }
  
   public PlayMediaOptions open() {
@@ -224,11 +225,13 @@ public class PlayMediaDialog extends Dialog {
     FileDialog dialog = new FileDialog (shell, SWT.SAVE);
     String [] filterNames = new String [] {"Audio Files", "All Files (*)"};
     String [] filterExtensions = new String [] {"*.mp3", "*"};
-    String filterPath = saveToDirectory != null ? saveToDirectory : new File(System.getProperty("user.home")).getAbsolutePath();
+    String filterPath = lastDirectory != null ? lastDirectory.getAbsolutePath() : new File(System.getProperty("user.home")).getAbsolutePath();
     dialog.setFilterNames(filterNames);
     dialog.setFilterExtensions(filterExtensions);
     dialog.setFilterPath(filterPath);
-    return dialog.open();
+    String result = dialog.open();
+    lastDirectory = new File(dialog.getFilterPath());
+    return result;
   }
   
   private void showValidationError(String message) {

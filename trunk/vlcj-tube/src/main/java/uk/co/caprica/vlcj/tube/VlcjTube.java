@@ -21,6 +21,7 @@ package uk.co.caprica.vlcj.tube;
 
 import java.awt.Canvas;
 import java.awt.Frame;
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -268,18 +269,23 @@ public class VlcjTube {
     });
     
     browser.addLocationListener(new LocationAdapter() {
+      File lastDirectory;
+      
       @Override
       public void changing(LocationEvent evt) {
         Matcher matcher = watchLinkPattern.matcher(evt.location);
         if(matcher.matches()) {
           if(!shiftKeyDown) {
+            // Cancel the normal link navigation
             evt.doit = false;
             
             if(controlKeyDown == true) {
-              PlayMediaDialog dialog = new PlayMediaDialog(shell);
+              PlayMediaDialog dialog = new PlayMediaDialog(shell, lastDirectory);
               PlayMediaOptions playMediaOptions = dialog.open();
               
               if(playMediaOptions != null) {
+                lastDirectory = new File(playMediaOptions.getAudioFileName()).getParentFile();
+                
                 if(playMediaOptions.isSaveAudio()) {
                   encodeMode = true;
                   positionProgressBar.setSelection(0);
@@ -419,6 +425,16 @@ public class VlcjTube {
       @Override
       public void subItemFinished(MediaPlayer mediaPlayer, int subItemIndex) {
         System.out.println("subItemFinished: " + subItemIndex);
+      }
+
+      @Override
+      public void endOfSubItems(MediaPlayer mediaPlayer) {
+        System.out.println("endOfSubItems");
+      }
+
+      @Override
+      public void error(MediaPlayer mediaPlayer) {
+        System.out.println("error");
       }
     });
   }
