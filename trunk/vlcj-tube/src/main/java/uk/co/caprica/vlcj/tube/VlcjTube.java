@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 
+import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
@@ -138,7 +139,7 @@ public class VlcjTube {
   private boolean shiftKeyDown;
   
   /**
-   * 
+   * True if encoding audio, false if playing normally.
    */
   private boolean encodeMode;
   
@@ -345,6 +346,14 @@ public class VlcjTube {
     mediaPlayer.setVideoSurface(videoSurface);
     
     mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+      int expected;
+      
+      @Override
+      public void newMedia(MediaPlayer mediaPlayer) {
+        System.out.println("newMedia");
+        expected = 0;
+      }
+
       @Override
       public void opening(MediaPlayer mediaPlayer) {
         System.out.println("opening");
@@ -364,12 +373,17 @@ public class VlcjTube {
       @Override
       public void finished(MediaPlayer mediaPlayer) {
         System.out.println("finished");
-        // Similar to Swing, obey the SWT threading model...
-        display.asyncExec(new Runnable() {
-          public void run() {
-            showBrowser();
-          }
-        });
+        if(expected == 0) {
+          // Similar to Swing, obey the SWT threading model...
+          display.asyncExec(new Runnable() {
+            public void run() {
+              showBrowser();
+            }
+          });
+        }
+        else {
+          expected--;
+        }
       }
 
       @Override
@@ -384,6 +398,27 @@ public class VlcjTube {
             }
           });
         }
+      }
+
+      @Override
+      public void stopped(MediaPlayer mediaPlayer) {
+        expected = 0;
+      }
+
+      @Override
+      public void mediaSubItemAdded(MediaPlayer mediaPlayer, libvlc_media_t subItem) {
+        System.out.println("subItemAdded");
+        expected++;
+      }
+
+      @Override
+      public void subItemPlayed(MediaPlayer mediaPlayer, int subItemIndex) {
+        System.out.println("subItemPlayed: " + subItemIndex);
+      }
+
+      @Override
+      public void subItemFinished(MediaPlayer mediaPlayer, int subItemIndex) {
+        System.out.println("subItemFinished: " + subItemIndex);
       }
     });
   }
