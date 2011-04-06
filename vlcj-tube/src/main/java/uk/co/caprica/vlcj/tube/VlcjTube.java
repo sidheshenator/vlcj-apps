@@ -152,7 +152,7 @@ public class VlcjTube {
    */
   public static void main(String[] args) throws Exception {
     LibXUtil.initialise();
-    new VlcjTube().start();
+    new VlcjTube(args).start();
   }
   
   /**
@@ -160,12 +160,12 @@ public class VlcjTube {
    * 
    * @throws Exception if an error occurs
    */
-  public VlcjTube() throws Exception {
+  public VlcjTube(String[] args) throws Exception {
     watchLinkPattern = Pattern.compile(WATCH_VIDEO_PATTERN);
     
     createUserInterface();
     createEmptyCursor();
-    createMediaPlayer();
+    createMediaPlayer(args);
   }
   
   /**
@@ -343,9 +343,11 @@ public class VlcjTube {
   
   /**
    * Create the native media player components.
+   * 
+   * @param args libvlc arguments 
    */
-  private void createMediaPlayer() {
-    mediaPlayerFactory = new MediaPlayerFactory("--no-video-title-show");
+  private void createMediaPlayer(String[] args) {
+    mediaPlayerFactory = new MediaPlayerFactory(args);
     mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
     mediaPlayer.setPlaySubItems(true);
     videoSurface = mediaPlayerFactory.newVideoSurface(videoSurfaceCanvas);
