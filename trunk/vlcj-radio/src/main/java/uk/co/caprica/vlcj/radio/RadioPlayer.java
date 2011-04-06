@@ -22,6 +22,7 @@ package uk.co.caprica.vlcj.radio;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -80,6 +81,7 @@ public class RadioPlayer {
     mediaPlayer.setPlaySubItems(true);
     
     mainFrame = new MainFrame(mediaPlayer);
+    mainFrame.setIconImage(new ImageIcon(getClass().getResource("/icons/vlcj-logo.png")).getImage());
     mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     mainFrame.pack();
     mainFrame.addWindowListener(new WindowAdapter() {
