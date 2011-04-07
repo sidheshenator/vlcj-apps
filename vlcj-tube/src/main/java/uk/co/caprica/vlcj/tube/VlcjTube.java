@@ -41,6 +41,7 @@ import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
@@ -177,6 +178,7 @@ public class VlcjTube {
     stackLayout = new StackLayout();
 
     shell = new Shell(display);
+    shell.setImage(new Image(display, getClass().getResourceAsStream("/icons/vlcj-logo.png")));
     shell.setLayout(stackLayout);
     shell.setSize(1200, 900);
     
