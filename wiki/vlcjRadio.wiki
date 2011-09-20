@@ -134,3 +134,5 @@ It is entirely your responsibility what you record and encode.
 It would be very easy to build upon this application to broadcast the radio station stream to devices across a local network.
 
 The !IceCast directory service at xiph.org is currently restricted to returning 1000 station entries even though there are around 9000 stations in the directory.
+
+This application scrapes HTML pages to look for radio stations - if the format of the HTML pages changes, then this will quite likely stop working. It can be a moving target to keep up to date with such changes and inevitably there will be times when the current version of this application stops working. In any event, this is intended as a reference application rather than a production application.
